@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults());
@@ -24,19 +24,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user1 = User.withUsername("user1")
-//                .password("{noop}1111")
-//                .roles("USER").build();
-//        UserDetails user2 = User.withUsername("user2")
-//                .password("{noop}1111")
-//                .roles("USER").build();
-//        UserDetails user3 = User.withUsername("user3")
-//                .password("{noop}1111")
-//                .roles("USER").build();
-//
-//
-//        return new InMemoryUserDetailsManager(user1, user2, user3);
-//    }
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withUsername("user").password("{noop}1111").roles("USER").build();
+
+        return new InMemoryUserDetailsManager(user);
+    }
 }
