@@ -109,9 +109,30 @@ context에 담겨져 있는 인증 객체를 지금 세션에 저장한다. 이�
 ![img_50.png](img_50.png)
 <br>
 컨텍스트가 삭제된다. 실패 핸들러를 통해서 로그인 에러 페이지로 이동한다. <br>
-![img_51.png](img_51.png)
+![img_51.png](img_51.png)<br>
+![img_52.png](img_52.png)<br>
+/anonymous로 접속해보자. 현재 
+.anonymous(anonymous -> anonymous<br>
+　　　.principal("guest")<br>
+　　　.authorities("ROLE_GUEST")<br>
+); <br>
+로 권한을 GUEST로 주었기 때문에 @GetMapping("/anonymous")로 잘 도착한다.<br>
+근데 인증을 받고나서 동일하게 /anonymous로 접근하면<br>
+![img_53.png](img_53.png)
+![img_54.png](img_54.png)<br>
+403 권한이 없다는 에러가 뜬다. <br>
+근데 이제 /authentication에 인증을 한 상태로 접근을 하면
+![img_55.png](img_55.png) <br> 
+이렇게 not anonymous가 뜨는데 로그아웃하고 또 /authentication에 접근하면 <br>
+Authentication authentication의 authentication이 null이 되고 똑같이 not anoymous가 뜬다.
+<br><br>
+인증받지 못한 상태에서 /anonymousContext여기로 접근하면 <br>
+![img_56.png](img_56.png) <br>
+이렇게 들어간다. 이걸 가능하게 한 것이 @CurrentSecurityContext 이것이다. <br>
+![img_57.png](img_57.png) <br>
+여기서 그 작업을 하고있다.
 
-
+ 
 
 
 
