@@ -126,7 +126,10 @@ Dao가 선택이 되고 인증처리가 된다. 이런식으로 할 수 있다.
 
 
 
-![img_45.png](img_45.png)
+![img_47.png](img_47.png)
+![img_48.png](img_48.png)  
+![img_49.png](img_49.png)
+![img_50.png](img_50.png)
 
 
 
