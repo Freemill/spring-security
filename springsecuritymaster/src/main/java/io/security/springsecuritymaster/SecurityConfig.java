@@ -25,7 +25,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("logoutSuccess").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+
                 .logout(logout -> logout
                         .logoutUrl("/logoutProc")
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logoutProc", "POST"))
