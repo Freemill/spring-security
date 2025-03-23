@@ -4,15 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -51,12 +47,27 @@ public class SecurityConfig {
 //                .addFilterBefore(customAuthenticationFilter(http, authenticationManager), UsernamePasswordAuthenticationFilter.class)
 //        ;
 
-        http
-                .authorizeRequests(auth -> auth
+//        http
+//                .authorizeRequests(auth -> auth
+//                        .requestMatchers("/login").permitAll()
+//                        .anyRequest().authenticated())
+////                .formLogin(Customizer.withDefaults());
+//                .csrf(AbstractHttpConfigurer::disable)
+
+        http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults());
-                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(((request, response, authException) -> {
+                            System.out.println("exception: " + authException.getMessage());
+                            response.sendRedirect("/login");
+                        }))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            System.out.println("exception : " + accessDeniedException.getMessage());
+                            response.sendRedirect("/denied");
+                        }));
+
         ;
 
         return http.build();
@@ -77,7 +88,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-         return new CustomUserDetailsService();
+        return new CustomUserDetailsService();
     }
 
 //    public CustomAuthenticationFilter customAuthenticationFilter(HttpSecurity http, AuthenticationManager authenticationManager) {

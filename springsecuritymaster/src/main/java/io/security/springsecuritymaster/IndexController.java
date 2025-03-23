@@ -52,4 +52,13 @@ public class IndexController {
         return "logoutSuccess";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "loginPage";
+    }
+
+    @GetMapping("/denied")
+    public String denied() {
+        return "denied";
+    }
 }
