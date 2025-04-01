@@ -17,33 +17,35 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
 
-public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class CustomAuthenticationFilter
+//        extends AbstractAuthenticationProcessingFilter
+{
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public CustomAuthenticationFilter(HttpSecurity http) {
-        super(new AntPathRequestMatcher("/api/login", "POST"));
-        setSecurityContextRepository(getSecurityContextRepository(http));
-    }
-
-    public SecurityContextRepository getSecurityContextRepository(HttpSecurity http) {
-        SecurityContextRepository securityContextRepository = http.getSharedObject(SecurityContextRepository.class);
-        if (securityContextRepository == null) {
-            securityContextRepository = new DelegatingSecurityContextRepository(
-                    new RequestAttributeSecurityContextRepository(), new HttpSessionSecurityContextRepository()
-            );
-        }
-
-        return securityContextRepository;
-    }
-
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-
-        return this.getAuthenticationManager().authenticate(token);
-    }
+//    private final ObjectMapper objectMapper = new ObjectMapper();
+//
+//    public CustomAuthenticationFilter(HttpSecurity http) {
+//        super(new AntPathRequestMatcher("/api/login", "POST"));
+//        setSecurityContextRepository(getSecurityContextRepository(http));
+//    }
+//
+//    public SecurityContextRepository getSecurityContextRepository(HttpSecurity http) {
+//        SecurityContextRepository securityContextRepository = http.getSharedObject(SecurityContextRepository.class);
+//        if (securityContextRepository == null) {
+//            securityContextRepository = new DelegatingSecurityContextRepository(
+//                    new RequestAttributeSecurityContextRepository(), new HttpSessionSecurityContextRepository()
+//            );
+//        }
+//
+//        return securityContextRepository;
+//    }
+//
+//    @Override
+//    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+//        String username = request.getParameter("username");
+//        String password = request.getParameter("password");
+//
+//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+//
+//        return this.getAuthenticationManager().authenticate(token);
+//    }
 }
