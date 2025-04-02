@@ -6,108 +6,45 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;import org.springframework.security.web.util.matcher.AntPathRequestMatcher;import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
 
-//        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-//        AuthenticationManager authenticationManager = builder.build();
-////        AuthenticationManager object = builder.getObject();
-//
-//        http
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/", "/api/login").permitAll()
-//                        .anyRequest().authenticated())
-////                .formLogin(Customizer.withDefaults())
-//                .authenticationManager(authenticationManager)
-//                .addFilterBefore(customAuthenticationFilter(http, authenticationManager), UsernamePasswordAuthenticationFilter.class);
-//        ;
-
-//        http
-//                .authorizeRequests(auth -> auth
-//                        .anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults());
-
-//        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-//        AuthenticationManager authenticationManager = builder.build();
-
-//        http.authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/login").permitAll()
-//                        .anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults())
-//                .securityContext(securityContext -> securityContext.requireExplicitSave(false))
-//                .authenticationManager(authenticationManager)
-//                .addFilterBefore(customAuthenticationFilter(http, authenticationManager), UsernamePasswordAuthenticationFilter.class)
-//        ;
-
-//        http
-//                .authorizeRequests(auth -> auth
-//                        .requestMatchers("/login").permitAll()
-//                        .anyRequest().authenticated())
-////                .formLogin(Customizer.withDefaults());
-//                .csrf(AbstractHttpConfigurer::disable)
-
-//        http.authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/login").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
-//                        .anyRequest().authenticated())
-//                .formLogin(Customizer.withDefaults())
-//                .exceptionHandling(exception -> exception.authenticationEntryPoint(((request, response, authException) -> {
-//                            System.out.println("exception: " + authException.getMessage());
-//                            response.sendRedirect("/login");
-//                        }))
-//                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-//                            System.out.println("exception : " + accessDeniedException.getMessage());
-//                            response.sendRedirect("/denied");
-//                        }));
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/csrf").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/user").hasAuthority("ROLE_USER")
+                        .requestMatchers("/myPage/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST).hasAuthority("ROLE_WRITE")
+                        .requestMatchers(new AntPathRequestMatcher("/manager/**")).hasAuthority("ROLE_MANAGER")
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/admin/payment")).hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
+                        .requestMatchers(new RegexRequestMatcher("/resource/[A-Za-z0-9]+", null)).hasAuthority("ROLE_MANAGER")
+                        .anyRequest().authenticated()
+                )
                 .formLogin(Customizer.withDefaults())
-        ;
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-//        return configuration.getAuthenticationManager();
-//    }
-//
-//    public CustomAuthenticationFilter customAuthenticationFilter(HttpSecurity http, AuthenticationManager authenticationManager) {
-//        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(http);
-//        customAuthenticationFilter.setAuthenticationManager(authenticationManager);
-//
-//        return customAuthenticationFilter;
-//    }
-//
-//
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return new CustomUserDetailsService();
-//    }
-
-//    public CustomAuthenticationFilter customAuthenticationFilter(HttpSecurity http, AuthenticationManager authenticationManager) {
-//        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(http);
-//        customAuthenticationFilter.setAuthenticationManager(authenticationManager);
-//
-//        return customAuthenticationFilter;
-//    }
-
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User.withUsername("user").password("{noop}1111").roles("USER").build();
+        UserDetails manager = User.withUsername("manager").password("{noop}1111").roles("MANAGER").build();
+        UserDetails admin = User.withUsername("admin").password("{noop}1111").roles("ADMIN", "WRITE").build();
 
-        return new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager(user, manager, admin);
     }
 }
