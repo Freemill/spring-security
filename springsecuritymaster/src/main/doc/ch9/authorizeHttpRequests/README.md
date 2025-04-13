@@ -154,6 +154,11 @@ public class SecurityConfig {
 
 ```
 <br>
+.hasAuthority와 .hasRole의 차이점은 <br>
+.hasAuthority는 문자열 그대로 권한이 설정이 되고 .hasRole은 ROLE_이 붙기 때문에 ROLE_을 제외하고 붙여야한다. <br>
+.AntPathRequestMatcher는 Ant 스타일의 패턴을 사용하여 URL을 매칭한다. <br>
+.mvcRequestMatcher는 Spring MVC의 핸들러 매핑을 사용하여 URL을 매칭한다. (Ant 패턴도 지원한다.)<br>
+
 
 ```java
 @Controller
@@ -199,7 +204,7 @@ Admin 페이지 접근은 오류가 난다. <br>
 
 ```java
  .requestMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
- .requestMatchers(new MvcRequestMatcher(introspector, "/admin/payment")).hasAuthority("ROLE_ADMIN")
+ .requestMatchers(new MvcRequestMatcher(introspector, "/admin/ payment")).hasAuthority("ROLE_ADMIN")
 ```
 
 
