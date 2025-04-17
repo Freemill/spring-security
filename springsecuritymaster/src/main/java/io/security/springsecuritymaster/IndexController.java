@@ -1,7 +1,6 @@
 package io.security.springsecuritymaster;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,28 +11,19 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/custom")
-    public String custom() {
-        return "custom";
+    @GetMapping("/user")
+    public String user() {
+        return "user";
     }
 
-    @GetMapping("/user/{name}")
-    public String userName(@PathVariable(value = "name") String name) {
-        return name;
+    @GetMapping("/db")
+    public String db() {
+        return "db";
     }
 
-    @GetMapping("/admin/db")
+    @GetMapping("/admin")
     public String admin() {
         return "admin";
     }
 
-    @GetMapping("/api/photos")
-    public String photos() {
-        return "photos";
-    }
-
-    @GetMapping("/oauth/login")
-    public String oauth() {
-        return "oauthLogin";
-    }
 }
