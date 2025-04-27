@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @EnableWebSecurity
@@ -32,8 +33,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("user").hasRole("USER")
-                        .requestMatchers("db").hasRole("DB")
-                        .requestMatchers("admin").hasRole("ADMIN")
+                        .requestMatchers("db").access(new WebExpressionAuthorizationManager("hasRole('DB')"))
+                        .requestMatchers("admin").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
@@ -41,10 +42,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults("MYPREFIX_");
-    }
+//    @Bean
+//    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+//        return new GrantedAuthorityDefaults("MYPREFIX_");
+//    }
 
     @Bean
     public UserDetailsService userDetailsService() {
