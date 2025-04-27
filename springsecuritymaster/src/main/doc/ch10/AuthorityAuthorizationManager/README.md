@@ -194,3 +194,109 @@ decision이 true이기 때문에 허용이 된다. <br>
 
 
 
+```java
+public class CustomAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
+    private static final String REQUIRED_ROLE = "ROLE_SECURE";
+
+    @Override
+    public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
+        Authentication auth = authentication.get();
+        if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
+            return new AuthorizationDecision(false);
+        }
+
+        boolean hasRequiredRole = auth.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> REQUIRED_ROLE.equals(grantedAuthority.getAuthority()));
+
+        return new AuthorizationDecision(hasRequiredRole);
+    }
+
+}
+```
+```java
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return webSecurity -> webSecurity.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("user").hasRole("USER")
+                        .requestMatchers("db").access(new WebExpressionAuthorizationManager("hasRole('DB')"))
+                        .requestMatchers("admin").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/secure").access(new CustomAuthorizationManager())
+                        .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
+
+        return http.build();
+    }
+    
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withUsername("user").password("{noop}1111").roles("USER").build();
+        UserDetails db = User.withUsername("db").password("{noop}1111").roles("DB").build();
+        UserDetails admin = User.withUsername("admin").password("{noop}1111").roles("ADMIN", "SECURE").build();
+
+        return new InMemoryUserDetailsManager(user, db, admin);
+    }
+}
+```
+```java
+@RestController
+public class IndexController {
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping("/user")
+    public String user() {
+        return "user";
+    }
+
+    @GetMapping("/db")
+    public String db() {
+        return "db";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
+    @GetMapping("/secure")
+    public String secure() {
+        return "secure";
+    }
+}
+```
+![img_73.png](img_73.png)
+secure가 추가 됨.
+![img_74.png](img_74.png)
+/secure로 접근
+![img_75.png](img_75.png)
+![img_76.png](img_76.png)
+현재 요청은 user고 이제 for문을 돌면서 secure를 찾는다.
+![img_79.png](img_79.png)
+![img_80.png](img_80.png)
+Manager가 CustomAuthorizationManager이다. <br>
+![img_81.png](img_81.png)
+AnonymousAuthenticationToken에 걸린다. 이번엔 admin으로 로그인해보자.
+<br>
+![img_82.png](img_82.png)
+![img_83.png](img_83.png)
+![img_84.png](img_84.png)
+![img_85.png](img_85.png)
+![img_86.png](img_86.png)
+권한에 secure가 있기 때문에 통과
+![img_87.png](img_87.png)
+
