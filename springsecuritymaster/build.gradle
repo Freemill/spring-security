@@ -29,6 +29,9 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.aspectj:aspectjrt'  // 최신 버전으로 변경 가능
+    implementation 'org.aspectj:aspectjweaver'
 }
 
 tasks.named('test') {

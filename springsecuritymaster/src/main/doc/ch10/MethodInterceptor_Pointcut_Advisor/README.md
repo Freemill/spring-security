@@ -43,7 +43,7 @@ public class MethodSecurityConfig {
         pointcut.setExpression("execution(* io.security.springsecuritymaster.DataService.*(..))");
         return pointcut;
     }
-
+    
     @Bean
     public Advisor serviceAdvisor() {
         return new DefaultPointcutAdvisor(pointcut(), methodInterceptor());
