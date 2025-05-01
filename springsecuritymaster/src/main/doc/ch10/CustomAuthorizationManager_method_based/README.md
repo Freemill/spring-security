@@ -1,9 +1,8 @@
-package io.security.springsecuritymaster;
-
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
+```java
 @Service
 public class DataService {
 
@@ -21,3 +20,4 @@ public class DataService {
         return "display";
     }
 }
+```

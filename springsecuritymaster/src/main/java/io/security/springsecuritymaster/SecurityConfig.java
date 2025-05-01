@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @Configuration
 public class SecurityConfig {
 
