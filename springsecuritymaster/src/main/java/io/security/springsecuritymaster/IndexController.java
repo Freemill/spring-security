@@ -1,58 +1,57 @@
 package io.security.springsecuritymaster;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationTrustResolver;
+import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class IndexController {
-    private final DataService dataService;
+    AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
 
     @GetMapping("/")
     public String index() {
-        return "index";
+        Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
+        // 만약 인증을 받지 못한 상태라면 authentication은 anonymous authentication일것이다.
+        // 따라서 이걸 구분할 필요가 있다. trustResolver를 사용하자.
+        return trustResolver.isAnonymous(authentication) ? "anonymous" : "authenticated";
     }
 
     @GetMapping("/user")
-    public String user() {
-        return dataService.getUser();
+    public User user(@AuthenticationPrincipal User user) {
+        return user;
     }
 
-    @GetMapping("/owner")
-    public Account owner(String name) {
-        return dataService.getOwner(name);
+    @GetMapping("/user2")
+    public String user(@AuthenticationPrincipal(expression = "username") String user) {
+        return user;
     }
 
-    @GetMapping("/display")
-    public String secure() {
-        return dataService.display();
+    @GetMapping("/currentUser")
+    public User currentUser(@CurrentUser User user) {
+        return user;
     }
 
-    @GetMapping("/login")
-    public String login(HttpServletRequest request, MemberDto memberDto) throws ServletException {
-        request.login(memberDto.getUsername(), memberDto.getPassword());
-        System.out.println("login is success");
-
-        return "login";
+    @GetMapping("/currentUser")
+    public String currentUsername(@CurrentUsername String user) {
+        return user;
     }
 
-    @GetMapping("/users")
-    public List<MemberDto> users(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        boolean authenticate = request.authenticate(response);
 
-        if (authenticate) {
-            return List.of(new MemberDto("user", "1111"));
-        }
-
-        return Collections.emptyList();
+    @GetMapping("/db")
+    public String db() {
+        return "db";
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
 }
