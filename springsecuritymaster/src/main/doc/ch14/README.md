@@ -7,3 +7,6 @@
 ```shell
 docker run --name springboot-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pass -d postgres
 ```
+![img_6.png](img_6.png)
+![img_7.png](img_7.png)
+![img_8.png](img_8.png)
