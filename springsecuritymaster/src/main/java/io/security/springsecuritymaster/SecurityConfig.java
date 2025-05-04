@@ -27,19 +27,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/user").hasAuthority("ROLE_USER")
+                        .requestMatchers("/db").hasAuthority("ROLE_DB")
+                        .requestMatchers("/admin").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
-
-        return http.build();
-    }
-
-    @Bean
-    @Order(1)
-    public SecurityFilterChain securityFilterChain2(HttpSecurity http) throws Exception {
-        http
-                .securityMatchers((matchers) -> matchers.requestMatchers("/api/**"))
-                .authorizeRequests(authorize -> authorize
-                        .anyRequest().permitAll());
+                .formLogin(Customizer.withDefaults())
+                .with(MyCustomDsl.customDsl(), dsl -> dsl.setFlag(true))
+        ;
 
         return http.build();
     }
