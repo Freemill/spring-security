@@ -1,12 +1,14 @@
 package io.security.springsecuritymaster.domain.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+@Data
 @AllArgsConstructor
 public class AccountContext implements UserDetails {
     private final AccountDto accountDto;
