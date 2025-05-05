@@ -16,4 +16,15 @@ docker run --name springboot-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASS
 ![img_10.png](img_10.png)
 ![img_12.png](img_12.png)
 ![img_13.png](img_13.png)
+로그아웃은 이렇게 하는게 좋은 방식은 아님. 커스텀 로그아웃 다시 확인.
 ![img_14.png](img_14.png)
+
+<br>
+
+![img_15.png](img_15.png)
+![img_16.png](img_16.png)
+![img_17.png](img_17.png)
+
+<br>
+
+![img_18.png](img_18.png)
