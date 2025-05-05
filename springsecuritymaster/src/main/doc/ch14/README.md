@@ -14,3 +14,6 @@ docker run --name springboot-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASS
 ![img_11.png](img_11.png)
  authenticationprovider를 지정하면 userdetailsservice를 지정할 필요 없음.
 ![img_10.png](img_10.png)
+![img_12.png](img_12.png)
+![img_13.png](img_13.png)
+![img_14.png](img_14.png)

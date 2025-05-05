@@ -34,7 +34,8 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '3.2.2'
+    implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity6', version: '3.1.2.RELEASE'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
     compileOnly 'org.projectlombok:lombok'
