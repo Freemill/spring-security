@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationProvider restAuthenticationProvider;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource;
@@ -56,6 +57,7 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain restSecurityFilterChain(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(restAuthenticationProvider);
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
         http
