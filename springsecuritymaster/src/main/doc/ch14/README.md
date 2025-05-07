@@ -67,7 +67,21 @@ docker run --name springboot-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASS
 ![img_37.png](img_37.png)
 ![img_38.png](img_38.png)
 ![img_39.png](img_39.png)
+Rest로 로그인해도 로그인이 유지가 안됨. Form같은 경우는 애초에 초기화 과정에서 세션에 인증을 영속화하기 위한 작업이 추가가 되는 반면, <br>
+Rest는 초기화를 위해 명시적인 작업을 추가해줘야한다. <br>
 
 <br>
+
+![img_40.png](img_40.png)
+![img_41.png](img_41.png)
+
+<br>
+
+![img_42.png](img_42.png)
+![img_43.png](img_43.png)
+![img_44.png](img_44.png)
+![img_45.png](img_45.png)
+![img_46.png](img_46.png)
+
 
 

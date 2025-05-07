@@ -29,7 +29,6 @@ public class LoginController {
         return "rest/login";
     }
 
-
     @GetMapping("/signup")
     public String signup() {
         return "login/signup";
