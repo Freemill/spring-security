@@ -25,11 +25,11 @@ public class RestAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return this.principal;
+        return this.credentials;
     }
 
     @Override
     public Object getPrincipal() {
-        return this.credentials;
+        return this.principal;
     }
 }

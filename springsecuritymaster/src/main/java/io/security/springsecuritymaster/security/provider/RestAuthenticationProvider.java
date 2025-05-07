@@ -22,17 +22,13 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
         String loginId = authentication.getName();
         String password = (String) authentication.getCredentials();
         AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(loginId);
 
-        if (!passwordEncoder.matches(password, accountContext.getPassword())) {
+        if(!passwordEncoder.matches(password, accountContext.getPassword())){
             throw new BadCredentialsException("Invalid password");
-        }
-
-        String secretKey = ((FormAuthenticationDetails) authentication.getDetails()).getSecretKey();
-        if (secretKey == null || !secretKey.equals("secret")) {
-            throw new SecretException("Invalid secret");
         }
 
         return new RestAuthenticationToken(accountContext.getAuthorities(), accountContext.getAccountDto(), null);
